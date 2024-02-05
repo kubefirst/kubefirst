@@ -54,61 +54,41 @@ var (
 	cancelContext context.CancelFunc
 )
 
+var FlagsToValidate = []FlagConfig{
+	{"ci", "bool"},
+	{"cluster-name", "string"},
+	{"cluster-type", "string"},
+	{"github-org", "string"},
+	{"github-user", "string"},
+	{"gitlab-group", "string"},
+	{"git-provider", "string"},
+	{"git-protocol", "string"},
+	{"gitops-template-url", "string"},
+	{"gitops-template-branch", "string"},
+	{"use-telemetry", "bool"},
+}
+
+var CheckPortsFn = k8s.CheckForExistingPortForwards
+
 func runK3d(cmd *cobra.Command, args []string) error {
-	ciFlag, err := cmd.Flags().GetBool("ci")
+
+	flagValues := make(map[string]interface{})
+	err := validateFlags(cmd, flagValues, FlagsToValidate)
 	if err != nil {
 		return err
 	}
 
-	clusterNameFlag, err := cmd.Flags().GetString("cluster-name")
-	if err != nil {
-		return err
-	}
-
-	clusterTypeFlag, err := cmd.Flags().GetString("cluster-type")
-	if err != nil {
-		return err
-	}
-
-	githubOrgFlag, err := cmd.Flags().GetString("github-org")
-	if err != nil {
-		return err
-	}
-
-	githubUserFlag, err := cmd.Flags().GetString("github-user")
-	if err != nil {
-		return err
-	}
-
-	gitlabGroupFlag, err := cmd.Flags().GetString("gitlab-group")
-	if err != nil {
-		return err
-	}
-
-	gitProviderFlag, err := cmd.Flags().GetString("git-provider")
-	if err != nil {
-		return err
-	}
-
-	gitProtocolFlag, err := cmd.Flags().GetString("git-protocol")
-	if err != nil {
-		return err
-	}
-
-	gitopsTemplateURLFlag, err := cmd.Flags().GetString("gitops-template-url")
-	if err != nil {
-		return err
-	}
-
-	gitopsTemplateBranchFlag, err := cmd.Flags().GetString("gitops-template-branch")
-	if err != nil {
-		return err
-	}
-
-	useTelemetryFlag, err := cmd.Flags().GetBool("use-telemetry")
-	if err != nil {
-		return err
-	}
+	ciFlag := flagValues["ci"].(bool)
+	clusterNameFlag := flagValues["cluster-name"].(string)
+	clusterTypeFlag := flagValues["cluster-type"].(string)
+	githubUserFlag := flagValues["github-user"].(string)
+	gitlabGroupFlag := flagValues["gitlab-group"].(string)
+	githubOrgFlag := flagValues["github-org"].(string)
+	gitProviderFlag := flagValues["git-provider"].(string)
+	gitProtocolFlag := flagValues["git-protocol"].(string)
+	gitopsTemplateURLFlag := flagValues["gitops-template-url"].(string)
+	gitopsTemplateBranchFlag := flagValues["gitops-template-branch"].(string)
+	useTelemetryFlag := flagValues["use-telemetry"].(bool)
 
 	// If cluster setup is complete, return
 	clusterSetupComplete := viper.GetBool("kubefirst-checks.cluster-install-complete")
@@ -142,7 +122,7 @@ func runK3d(cmd *cobra.Command, args []string) error {
 	}
 
 	// Check for existing port forwards before continuing
-	err = k8s.CheckForExistingPortForwards(8080, 8200, 9000, 9094)
+	err = CheckPortsFn(8080, 8200, 9000, 9094)
 	if err != nil {
 		return fmt.Errorf("%s - this port is required to set up your kubefirst environment - please close any existing port forwards before continuing", err.Error())
 	}
