@@ -27,16 +27,14 @@ import (
 func main() {
 	argsWithProg := os.Args
 
-	bubbleTeaBlacklist := []string{"completion", "help", "--help", "-h", "quota", "logs"}
+	bubbleTeaBlacklist := []string{"completion", "help", "--help", "-h", "quota", "logs", "--ci"}
 	canRunBubbleTea := true
 
-	if argsWithProg != nil {
-		for _, arg := range argsWithProg {
-			isBlackListed := slices.Contains(bubbleTeaBlacklist, arg)
+	for _, arg := range argsWithProg {
+		isBlackListed := slices.Contains(bubbleTeaBlacklist, arg)
 
-			if isBlackListed {
-				canRunBubbleTea = false
-			}
+		if isBlackListed {
+			canRunBubbleTea = false
 		}
 	}
 
@@ -135,9 +133,13 @@ func main() {
 			cmd.Execute()
 		}()
 
-		progress.Progress.Run()
+		_, err := progress.Progress.Run()
+
+		if err != nil {
+			stdLog.Panicf("unable to run bubbletea program, error is: %s", err)
+		}
 	} else {
+		progress.DisableBubbleTeaExecution()
 		cmd.Execute()
 	}
-
 }
