@@ -59,8 +59,8 @@ func createCivo(cmd *cobra.Command, args []string) error {
 	// Validate git
 	executionControl := viper.GetBool(fmt.Sprintf("kubefirst-checks.%s-credentials", cliFlags.GitProvider))
 	if !executionControl {
-		newRepositoryNames := []string{"gitops", "metaphor"}
-		newTeamNames := []string{"admins", "developers"}
+		newRepositoryNames := []string{cliFlags.GitopsRepoName,cliFlags.MetaphorRepoName}
+		newTeamNames := []string{cliFlags.AdminTeamName,cliFlags.DeveloperTeamName}
 
 		initGitParameters := gitShim.GitInitParameters{
 			GitProvider:  cliFlags.GitProvider,
@@ -76,9 +76,10 @@ func createCivo(cmd *cobra.Command, args []string) error {
 			return nil
 		}
 	}
+
 	viper.Set(fmt.Sprintf("kubefirst-checks.%s-credentials", cliFlags.GitProvider), true)
 	viper.WriteConfig()
-
+	
 	k3dClusterCreationComplete := viper.GetBool("launch.deployed")
 	isK1Debug := strings.ToLower(os.Getenv("K1_LOCAL_DEBUG")) == "true"
 
