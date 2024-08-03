@@ -1069,7 +1069,7 @@ func runK3d(cmd *cobra.Command, args []string) error {
 		log.Info().Msg("applying the registry application to argocd")
 		registryApplicationObject := argocd.GetArgoCDApplicationObject(gitopsRepoURL, fmt.Sprintf("registry/%s", clusterNameFlag))
 
-		err = k3d.Restart(config.Kubeconfig)
+		err = k3d.RestartDeployment(context.Background(), kcfg.Clientset, "argocd", "argocd-applicationset-controller")
 		if err != nil {
 			return fmt.Errorf("Error in Restarting argocd controller %w", err)
 		}
