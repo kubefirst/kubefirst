@@ -109,22 +109,22 @@ func runK3d(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	gitopsRepoName, err := cmd.Flags().GetString("gitopsRepoName")
+	gitopsRepoName, err := cmd.Flags().GetString("gitops-repo-name")
 	if err != nil {
 		return err
 	}
 
-	metaphorRepoName, err := cmd.Flags().GetString("metaphorRepoName")
+	metaphorRepoName, err := cmd.Flags().GetString("metaphor-repo-name")
 	if err != nil {
 		return err
 	}
 
-	adminTeamName, err := cmd.Flags().GetString("adminTeamName")
+	adminTeamName, err := cmd.Flags().GetString("admin-team-name")
 	if err != nil {
 		return err
 	}
 
-	developerTeamName, err := cmd.Flags().GetString("developerTeamName")
+	developerTeamName, err := cmd.Flags().GetString("developer-team-name")
 	if err != nil {
 		return err
 	}
@@ -631,6 +631,7 @@ func runK3d(cmd *cobra.Command, args []string) error {
 		return prep_err
 	}
 
+	return nil
 	progressPrinter.AddTracker("applying-git-terraform", fmt.Sprintf("Applying %s Terraform", config.GitProvider), 1)
 	progressPrinter.SetupProgress(progressPrinter.TotalOfTrackers(), false)
 
