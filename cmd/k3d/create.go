@@ -631,7 +631,6 @@ func runK3d(cmd *cobra.Command, args []string) error {
 		return prep_err
 	}
 
-	return nil
 	progressPrinter.AddTracker("applying-git-terraform", fmt.Sprintf("Applying %s Terraform", config.GitProvider), 1)
 	progressPrinter.SetupProgress(progressPrinter.TotalOfTrackers(), false)
 
