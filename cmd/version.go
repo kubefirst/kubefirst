@@ -14,19 +14,32 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var (
+	ciFlag bool
+)
+
 func init() {
-	rootCmd.AddCommand(versionCmd)
+	rootCmd.AddCommand(Create())
 }
 
-var versionCmd = &cobra.Command{
-	Use:   "version",
-	Short: "print the version number for kubefirst-cli",
-	Long:  `All software has versions. This is kubefirst's`,
-	Run: func(cmd *cobra.Command, args []string) {
-		versionMsg := `
+func Create() *cobra.Command {
+	versionCmd := &cobra.Command{
+		Use:   "version",
+		Short: "print the version number for kubefirst-cli",
+		Long:  `All software has versions. This is kubefirst's`,
+		Run: func(cmd *cobra.Command, args []string) {
+			ciFlag, _ := cmd.Flags().GetBool("ci")
+			versionMsg := `
 ##
 ### kubefirst-cli golang utility version:` + fmt.Sprintf("`%s`", configs.K1Version)
 
-		progress.Success(versionMsg)
-	},
+			if ciFlag {
+				fmt.Print(versionMsg)
+			} else {
+				progress.Success(versionMsg)
+			}
+		},
+	}
+
+	return versionCmd
 }

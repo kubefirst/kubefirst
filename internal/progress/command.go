@@ -21,7 +21,7 @@ func GetClusterInterval(clusterName string) tea.Cmd {
 		if err != nil {
 		}
 
-		return CusterProvisioningMsg(provisioningCluster)
+		return ClusterProvisioningMsg(provisioningCluster)
 	})
 }
 
