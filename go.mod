@@ -29,6 +29,7 @@ require (
 )
 
 replace (
+	github.com/konstructio/kubefirst-api => ../kubefirst-api
 	sigs.k8s.io/kustomize/api => sigs.k8s.io/kustomize/api v0.12.1
 	// https://github.com/fluxcd/flux2/issues/3564
 	sigs.k8s.io/kustomize/kustomize/v4 => sigs.k8s.io/kustomize/kustomize/v4 v4.5.7
